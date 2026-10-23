@@ -1,14 +1,16 @@
 import os
 import sqlite3
-
+from datetime import datetime
 
 def get_companion(db_path):
+    """Открывает соединение с БД и включает необходимые настройки SQLite."""
     conn = sqlite3.connect(db_path, timeout=10.0)
     conn.execute("PRAGMA foreign_keys = ON")  # Включаем проверку всех внешних ключей в текущем соединении.
     conn.execute('PRAGMA journal_mode=WAL;')
     return conn
 
 def init_companion_db(db_path: str):
+    """Создаёт таблицы и представление БД, если они ещё не существуют."""
     conn = get_companion(db_path)
     try:
         cur = conn.cursor()
@@ -16,9 +18,12 @@ def init_companion_db(db_path: str):
         # таблица диалогов
         cur.execute('''
         CREATE TABLE IF NOT EXISTS conversations (
-            id INTEGER PRIMARY KEY,                         -- Идентификатор диалога
-            started_at TEXT NOT NULL,                       -- Когда начат
-            title TEXT                                      -- Название диалога
+            id              INTEGER PRIMARY KEY,                                   -- Идентификатор диалога
+            started_at      TEXT NOT NULL,                                         -- Когда начат
+            title           TEXT NOT NULL DEFAULT 'Новый диалог',                  -- Название диалога
+            status          TEXT NOT NULL DEFAULT 'active'                         -- active — можно продолжать, archived — скрыт из активных
+                            CHECK (status IN ('active', 'archived')),
+            last_message_at TEXT                                                   -- Время последнего сообщения (обновляется при save_message)
         )
         ''')
 
@@ -95,6 +100,126 @@ def init_companion_db(db_path: str):
         conn.commit()
     finally:
         conn.close()
+
+
+def new_dialog(db_path):
+    """Создаёт новый диалог и возвращает его ID."""
+    conn = get_companion(db_path)
+    try:
+        cursor = conn.cursor()
+        now = datetime.now().isoformat(sep=" ", timespec="seconds")
+        # временное название диалогов
+        title = 'Новый диалог'
+        cursor.execute('''
+        INSERT INTO conversations (started_at, title)
+        VALUES (?,?)
+        ''', (now, title))
+        last_id = cursor.lastrowid
+        conn.commit()
+        return last_id
+    finally:
+        conn.close()
+
+def get_dialog (db_path, dialog_id):
+    """Возвращает ID, название и статус диалога или None, если он не найден."""
+    conn = get_companion(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+        SELECT id, title, status FROM conversations WHERE id = ?
+        ''', (dialog_id,))
+        result = cursor.fetchone()
+        return result if result else None
+    finally:
+        conn.close()
+
+def get_active_dialogs(db_path):
+    """Возвращает список незархивированных диалогов, начиная с недавно обновлённых."""
+    conn = get_companion(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+        SELECT id, title, status, last_message_at FROM conversations WHERE status = 'active' ORDER BY last_message_at DESC
+        ''')
+        result = cursor.fetchall()
+        return result
+    finally:
+        conn.close()
+
+
+def save_message(db_path, dialog_id,  role, content):
+    """Сохраняет сообщение и обновляет время последнего сообщения в диалоге."""
+    conn = get_companion(db_path)
+    try:
+        cursor = conn.cursor()
+        now = datetime.now().isoformat(sep=" ", timespec="seconds")
+        cursor.execute('''
+        INSERT INTO messages (conversation_id, role, content, created_at)
+        VALUES (?,?,?,?) 
+        ''', (dialog_id, role, content, now))
+        cursor.execute('''
+        UPDATE conversations SET last_message_at = ?  WHERE id = ?
+        ''', (now, dialog_id))
+        conn.commit()
+    finally:
+        conn.close()
+
+def get_or_create_active_dialog(db_path):
+    # TODO В процессе.
+    """Восстанавливает активный диалог из настроек или выбирает либо создаёт другой."""
+    conn = get_companion(db_path)
+    try:
+        cursor = conn.cursor()
+
+
+
+    finally:
+        conn.close()
+
+
+def load_messages(db_path, dialog_id):
+    """Загружает всю историю диалога в хронологическом порядке."""
+    conn = get_companion(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+        Select role, content FROM messages WHERE conversation_id = ? ORDER BY id ASC
+        ''', (dialog_id,))
+        messages = []
+        result = cursor.fetchall()
+        for row in result:
+            message = {"role": row[0], "content": row[1]}
+            messages.append(message)
+        return messages
+    finally:
+        conn.close()
+
+def get_setting(db_path, key):
+    """Возвращает значение настройки по ключу или None, если её нет."""
+    conn = get_companion(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+        select value from settings where key = ?
+        ''', (key,))
+        result = cursor.fetchone()
+        return result[0] if result else None
+    finally:
+        conn.close()
+
+def set_setting(db_path, key, value):
+    """Создаёт настройку или обновляет её существующее значение."""
+    conn = get_companion(db_path)
+    try:
+        cursor = conn.cursor()
+        now = datetime.now().isoformat(sep=" ", timespec="seconds")
+        cursor.execute('''
+        INSERT INTO settings (key, value, updated_at) VALUES (?,?,?) ON CONFLICT (key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at
+        ''', (key, value, now))
+        conn.commit()
+    finally:
+        conn.close()
+
 
 
 if __name__ == "__main__":
