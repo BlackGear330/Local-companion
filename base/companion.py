@@ -102,14 +102,12 @@ def init_companion_db(db_path: str):
         conn.close()
 
 
-def new_dialog(db_path):
+def new_dialog(db_path, title: str = 'Новый диалог' ):
     """Создаёт новый диалог и возвращает его ID."""
     conn = get_companion(db_path)
     try:
         cursor = conn.cursor()
         now = datetime.now().isoformat(sep=" ", timespec="seconds")
-        # временное название диалогов
-        title = 'Новый диалог'
         cursor.execute('''
         INSERT INTO conversations (started_at, title)
         VALUES (?,?)
@@ -133,14 +131,14 @@ def get_dialog (db_path, dialog_id):
     finally:
         conn.close()
 
-def get_active_dialogs(db_path):
+def get_active_dialogs(db_path, status = 'active'):
     """Возвращает список незархивированных диалогов, начиная с недавно обновлённых."""
     conn = get_companion(db_path)
     try:
         cursor = conn.cursor()
         cursor.execute('''
-        SELECT id, title, status, last_message_at FROM conversations WHERE status = 'active' ORDER BY last_message_at DESC
-        ''')
+        SELECT id, title, status, last_message_at FROM conversations WHERE status = ? ORDER BY last_message_at DESC
+        ''', (status,))
         result = cursor.fetchall()
         return result
     finally:
@@ -165,17 +163,45 @@ def save_message(db_path, dialog_id,  role, content):
         conn.close()
 
 def get_or_create_active_dialog(db_path):
-    # TODO В процессе.
-    """Восстанавливает активный диалог из настроек или выбирает либо создаёт другой."""
+    """Восстанавливает активный диалог из настроек или выбирает/создаёт другой."""
+    active_id = get_setting(db_path, 'active_conversation_id')
+    if active_id is not None:
+        dialog_info = get_dialog(db_path, active_id)
+        if dialog_info is not None and dialog_info[2] == 'active':
+            return int(active_id)
+    dialog_info_active = get_active_dialogs(db_path)
+    if dialog_info_active:
+        result_dialog_info = dialog_info_active[0]
+        result_dialog_id = result_dialog_info[0]
+        set_setting(db_path, 'active_conversation_id', result_dialog_id)
+        return result_dialog_id
+    else:
+        result_dialog_id = new_dialog(db_path, title='Основной')
+        set_setting(db_path, 'active_conversation_id', result_dialog_id)
+        return result_dialog_id
+
+def rename_dialog(db_path, dialog_id, title):
+    """Переименовывает диалог"""
     conn = get_companion(db_path)
     try:
         cursor = conn.cursor()
-
-
-
+        cursor.execute('''
+        UPDATE conversations SET title = ? WHERE id = ?
+        ''', (title, dialog_id))
+        conn.commit()
     finally:
         conn.close()
 
+def set_dialog_status(db_path, dialog_id, status):
+    conn = get_companion(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+        UPDATE conversations SET status = ? WHERE id = ?
+        ''', (status, dialog_id))
+        conn.commit()
+    finally:
+        conn.close()
 
 def load_messages(db_path, dialog_id):
     """Загружает всю историю диалога в хронологическом порядке."""
