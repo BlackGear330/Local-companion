@@ -26,6 +26,12 @@ def init_companion_db(db_path: str):
             last_message_at TEXT                                                   -- Время последнего сообщения (обновляется при save_message)
         )
         ''')
+        cur.execute("PRAGMA table_info(conversations)")
+        columns = [col[1] for col in cur.fetchall()]
+        if 'status' not in columns:
+            cur.execute("ALTER TABLE conversations ADD COLUMN status TEXT NOT NULL DEFAULT 'active'")
+        if 'last_message_at' not in columns:
+            cur.execute("ALTER TABLE conversations ADD COLUMN last_message_at TEXT")
 
         # таблица сообщений
         cur.execute('''
@@ -118,7 +124,7 @@ def new_dialog(db_path, title: str = 'Новый диалог' ):
     finally:
         conn.close()
 
-def get_dialog (db_path, dialog_id):
+def get_dialog(db_path, dialog_id):
     """Возвращает ID, название и статус диалога или None, если он не найден."""
     conn = get_companion(db_path)
     try:

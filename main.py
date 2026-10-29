@@ -3,6 +3,7 @@ from openai import OpenAI
 from pathlib import Path
 from base.companion import save_message, get_or_create_active_dialog, load_messages, new_dialog, get_active_dialogs, get_dialog, set_setting, rename_dialog, set_dialog_status
 from commands import handle_command
+from base.utils import persona, limit_messages
 
 
 print("Чат с локальной моделью запущен.  \nДля выхода введите '1' \nЧтобы узнать список команд введите '/help'")
@@ -11,16 +12,7 @@ client = OpenAI(
     base_url = 'http://127.0.0.1:1234/v1',
     api_key = 'LM',
 )
-def persona():
-    base_dir = Path(__file__).resolve().parent
-    file_path = base_dir / 'settings' / 'persona.txt'
-    with open(file_path, 'r', encoding= 'utf-8') as f:
-        content = f.read()
-    return content
 
-def limit_messages(history, limit: int = 30):
-    result = history[-limit:]
-    return result
 
 ai_persona = persona()
 
