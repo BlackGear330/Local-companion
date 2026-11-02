@@ -4,9 +4,9 @@ import pytest
 from pathlib import Path
 import sqlite3
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../base')))
 
-from companion import init_companion_db, new_dialog, get_dialog, get_active_dialogs, save_message, get_or_create_active_dialog, rename_dialog, set_dialog_status, load_messages, get_setting, set_setting
+
+from base.companion import init_companion_db, new_dialog, get_dialog, save_message, get_or_create_active_dialog, set_dialog_status, load_messages, get_setting, set_setting
 
 @pytest.fixture
 def temp_db_path(tmp_path: Path) -> Path:
