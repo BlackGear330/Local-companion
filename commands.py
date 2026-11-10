@@ -1,4 +1,4 @@
-from base.companion import save_message, get_or_create_active_dialog, load_messages, new_dialog, get_active_dialogs, get_dialog, set_setting, rename_dialog, set_dialog_status
+from base.companion import new_dialog, get_active_dialogs, get_dialog, set_setting, rename_dialog, set_dialog_status
 
 def handle_command(user_message, db_path, dialog_id):
     """Обрабатывает команды. Возвращает актуальный dialog_id."""

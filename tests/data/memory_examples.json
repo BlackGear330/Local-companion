@@ -1,0 +1,235 @@
+{
+  "development": [
+    {
+      "text": "Я люблю чай с лимоном",
+      "expected_result": {
+        "content": "Пользователь любит чай с лимоном",
+        "type": "preference",
+        "certainty": "confirmed",
+        "source_quote": "люблю чай с лимоном"
+      }
+    },
+    {
+      "text": "Хочу выучить английский до уровня C1",
+      "expected_result": {
+        "content": "Пользователь хочет выучить английский язык до уровня C1",
+        "type": "goal",
+        "certainty": "confirmed",
+        "source_quote": "Хочу выучить английский до уровня C1"
+      }
+    },
+    {
+      "text": "Вход в python проще, чем в другие языки",
+      "expected_result": {
+        "content": "Пользователь считает, что изучить python проще, чем другие языки",
+        "type": "preference",
+        "certainty": "confirmed",
+        "source_quote": "Вход в python проще, чем в другие языки"
+      }
+    },
+    {
+      "text": "Собаки очень интересные",
+      "expected_result": {
+        "content": "Возможно пользователю нравятся собаки",
+        "type": "preference",
+        "certainty": "assumed",
+        "source_quote": "Собаки очень интересные"
+      }
+    },
+    {
+      "text": "А как в Python сделать список?",
+      "expected_result": null
+    },
+    {
+      "text": "Я перешел на Python 3 месяца назад, до этого работал в поддержке.",
+      "expected_result": {
+        "content": "Пользователь изучает Python 3 месяца, имеет опыт работы в техподдержке",
+        "type": "fact",
+        "certainty": "confirmed",
+        "source_quote": "перешел на Python 3 месяца назад"
+      }
+    },
+    {
+      "text": "Не люблю, когда код пишут без тестов. Это бесит.",
+      "expected_result": {
+        "content": "Пользователь предпочитает, чтобы код покрывался тестами, негативно относится к коду без тестов",
+        "type": "preference",
+        "certainty": "confirmed",
+        "source_quote": "Не люблю, когда код пишут без тестов"
+      }
+    },
+    {
+      "text": "Скорее всего, на следующей неделе начну делать GUI для компаньона.",
+      "expected_result": {
+        "content": "Планирует начать разработку GUI для проекта",
+        "type": "goal",
+        "certainty": "assumed",
+        "source_quote": "Скорее всего, на следующей неделе начну делать GUI"
+      }
+    },
+    {
+      "text": "Почему цикл for съедает столько памяти?",
+      "expected_result": null
+    },
+    {
+      "text": "Сегодня в Питере опять дождь льет.",
+      "expected_result": null
+    },
+    {
+      "text": "Вчера скачал Cyberpunk 2077, пока нравится.",
+      "expected_result": {
+        "content": "Пользователь скачал игру Cyberpunk 2077 и она ему понравилась",
+        "type": "game",
+        "certainty": "assumed",
+        "source_quote": "скачал Cyberpunk 2077"
+      }
+    },
+    {
+      "text": "Сейчас пишу бэкенд для своего ИИ-компаньона на Python.",
+      "expected_result": {
+        "content": "Пользователь разрабатывает бэкенд для проекта ИИ-компаньона на Python",
+        "type": "project",
+        "certainty": "confirmed",
+        "source_quote": "пишу бэкенд для своего ИИ-компаньона"
+      }
+    },
+    {
+      "text": "Я живу в Сургуте.",
+      "expected_result": {
+        "content": "Пользователь живет в Сургуте",
+        "type": "fact",
+        "certainty": "confirmed",
+        "source_quote": "живу в Сургуте"
+      }
+    },
+    {
+      "text": "Я сегодня жутко устал после работы.",
+      "expected_result": null
+    },
+    {
+      "text": "Привет, Нова! Как твои дела?",
+      "expected_result": null
+    },
+    {
+      "text": "Наверное, стоит начать бегать по утрам.",
+      "expected_result": {
+        "content": "Пользователь думает о том, чтобы начать бегать по утрам",
+        "type": "goal",
+        "certainty": "assumed",
+        "source_quote": "Наверное, стоит начать бегать по утрам"
+      }
+    },
+    {
+      "text": "Мне 26 лет.",
+      "expected_result": {
+        "content": "Возраст пользователя — 26 лет",
+        "type": "fact",
+        "certainty": "confirmed",
+        "source_quote": "Мне 26 лет"
+      }
+    },
+    {
+      "text": "Не люблю острую еду, от нее изжога.",
+      "expected_result": {
+        "content": "Пользователь не любит острую еду",
+        "type": "preference",
+        "certainty": "confirmed",
+        "source_quote": "Не люблю острую еду"
+      }
+    },
+    {
+      "text": "Спасибо за подробный ответ!",
+      "expected_result": null
+    },
+    {
+      "text": "Иногда играю в Dota 2, чтобы отвлечься от кода.",
+      "expected_result": {
+        "content": "Пользователь иногда играет в Dota 2",
+        "type": "game",
+        "certainty": "confirmed",
+        "source_quote": "Иногда играю в Dota 2"
+      }
+    }
+  ],
+    "test": [
+    {
+      "text": "У меня есть кот по кличке Барсик.",
+      "expected_result": {
+        "content": "У пользователя есть кот по кличке Барсик",
+        "type": "fact",
+        "certainty": "confirmed",
+        "source_quote": "есть кот по кличке Барсик"
+      }
+    },
+    {
+      "text": "Обожаю смотреть сериалы на выходных.",
+      "expected_result": {
+        "content": "Пользователь любит смотреть сериалы на выходных",
+        "type": "preference",
+        "certainty": "confirmed",
+        "source_quote": "Обожаю смотреть сериалы"
+      }
+    },
+    {
+      "text": "Хочу купить машину в следующем году.",
+      "expected_result": {
+        "content": "Пользователь хочет купить машину в следующем году",
+        "type": "goal",
+        "certainty": "confirmed",
+        "source_quote": "Хочу купить машину"
+      }
+    },
+    {
+      "text": "Сейчас учусь работать с Docker.",
+      "expected_result": {
+        "content": "Пользователь изучает Docker",
+        "type": "fact",
+        "certainty": "confirmed",
+        "source_quote": "учусь работать с Docker"
+      }
+    },
+    {
+      "text": "Прохожу сейчас The Witcher 3.",
+      "expected_result": {
+        "content": "Пользователь играет в The Witcher 3",
+        "type": "game",
+        "certainty": "confirmed",
+        "source_quote": "Прохожу сейчас The Witcher 3"
+      }
+    },
+    {
+      "text": "Может быть, поеду в отпуск в Сочи.",
+      "expected_result": {
+        "content": "Пользователь возможно поедет в отпуск в Сочи",
+        "type": "goal",
+        "certainty": "assumed",
+        "source_quote": "Может быть, поеду в отпуск в Сочи"
+      }
+    },
+    {
+      "text": "Почему небо голубое?",
+      "expected_result": null
+    },
+    {
+      "text": "Сейчас пойду обедать.",
+      "expected_result": null
+    },
+    {
+      "text": "Здравствуй! Давно не виделись.",
+      "expected_result": null
+    },
+    {
+      "text": "У меня слабый ноутбук, работаю на старом Lenovo.",
+      "expected_result": {
+        "content": "У пользователя слабый ноутбук Lenovo",
+        "type": "fact",
+        "certainty": "confirmed",
+        "source_quote": "слабый ноутбук, работаю на старом Lenovo"
+      }
+    }
+  ]
+}
+
+
+
+

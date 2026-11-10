@@ -2,7 +2,7 @@ from base.utils import limit_messages
 from commands import handle_command
 import pytest
 from pathlib import Path
-from base.companion import init_companion_db, get_setting, get_dialog, new_dialog, get_or_create_active_dialog
+from base.companion import init_companion_db, get_setting, get_dialog, get_or_create_active_dialog
 
 
 @pytest.fixture

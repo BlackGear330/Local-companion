@@ -1,7 +1,7 @@
 import openai
 from openai import OpenAI
 from pathlib import Path
-from base.companion import save_message, get_or_create_active_dialog, load_messages, new_dialog, get_active_dialogs, get_dialog, set_setting, rename_dialog, set_dialog_status
+from base.companion import save_message, get_or_create_active_dialog, load_messages
 from commands import handle_command
 from base.utils import persona, limit_messages
 
